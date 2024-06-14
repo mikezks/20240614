@@ -35,4 +35,8 @@ export class PassengerSearchComponent {
   select(passenger: Passenger): void {
     this.selectedPassenger = this.selectedPassenger === passenger ? undefined : passenger;
   }
+
+  reset(): void {
+    this.store.deletePassengers();
+  }
 }

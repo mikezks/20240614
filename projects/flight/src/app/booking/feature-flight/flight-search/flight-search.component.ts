@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, Injector, ViewContainerRef, computed, effect, inject, runInInjectionContext, signal, untracked } from '@angular/core';
+import { Component, Injector, computed, effect, inject, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Flight, FlightFilter, injectTicketsFacade } from '../../logic-flight';
+import { Flight, injectTicketsFacade } from '../../logic-flight';
 import { FlightCardComponent, FlightFilterComponent } from '../../ui-flight';
 
 
