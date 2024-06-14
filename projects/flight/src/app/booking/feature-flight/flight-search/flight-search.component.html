@@ -1,5 +1,4 @@
-<ng-container *ngIf="flights$ | async as flights">
-
+@if (flights(); as flights) {
   <div class="card">
     <div class="card-header">
       <h2 class="card-title">Flight Search</h2>
@@ -8,7 +7,7 @@
     <div class="card-body">
 
       <app-flight-filter
-        [filter]="filter"
+        [filter]="filter()"
         (searchTrigger)="search($event)"
         >
         <div *ngIf="flights.length" class="flight-filter-info">
@@ -17,6 +16,7 @@
         <button *ngIf="flights.length" (click)="reset()"
           class="btn btn-default flight-filter-button"
         >Reset</button>
+        <p class="flight-filter-info">{{ flightRoute() }}</p>
       </app-flight-filter>
 
     </div>
@@ -41,5 +41,4 @@
       <pre>{{ basket | json }}</pre>
     </div>
   </div>
-
-</ng-container>
+}
