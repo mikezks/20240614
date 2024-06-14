@@ -1,9 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, Injector, computed, effect, inject, runInInjectionContext, signal } from '@angular/core';
+import { Component, Injector, ViewContainerRef, computed, effect, inject, runInInjectionContext, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Flight, FlightFilter, injectTicketsFacade } from '../../logic-flight';
 import { FlightCardComponent, FlightFilterComponent } from '../../ui-flight';
-import { SIGNAL } from '@angular/core/primitives/signals';
 
 
 @Component({
@@ -37,34 +36,17 @@ export class FlightSearchComponent {
 
   constructor() {
     effect(() => console.log(this.flightRoute()));
-
-    this.filter.update(filter => ({
-      ...filter,
-      from: 'Barcelona'
-    }));
-    this.filter.update(filter => ({
-      ...filter,
-      from: 'Madrid'
-    }));
-    this.filter.update(filter => ({
-      ...filter,
-      from: 'Rome'
-    }));
-    this.filter.update(filter => ({
-      ...filter,
-      from: 'St. Gallen'
-    }));
-
-    console.log(this.flightRoute[SIGNAL]);
+    effect(() => {
+      this.filter();
+      untracked(() => this.search());
+    });
   }
 
-  protected search(filter: FlightFilter): void {
-    runInInjectionContext(
+  protected search(): void {
+    /* runInInjectionContext(
       this.injector,
       () =>effect(() => console.log(this.flightRoute()))
-    );
-
-    this.filter.set(filter);
+    ); */
 
     if (!this.filter().from || !this.filter().to) {
       return;

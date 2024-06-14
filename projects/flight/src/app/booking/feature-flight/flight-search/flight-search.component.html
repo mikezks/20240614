@@ -6,10 +6,7 @@
 
     <div class="card-body">
 
-      <app-flight-filter
-        [filter]="filter()"
-        (searchTrigger)="search($event)"
-        >
+      <app-flight-filter [(filter)]="filter">
         <div *ngIf="flights.length" class="flight-filter-info">
           {{ flights.length }} flights found!
         </div>
@@ -25,9 +22,9 @@
   <div class="row">
     <div *ngFor="let flight of flights" class="col-xs-12 col-sm-6 col-md-4">
       <app-flight-card
-      [item]="flight"
-      [(selected)]="basket[flight.id]"
-      (delayTrigger)="delay($event)"
+        [item]="flight"
+        [(selected)]="basket[flight.id]"
+        (delayTrigger)="delay($event)"
     />
     </div>
   </div>
