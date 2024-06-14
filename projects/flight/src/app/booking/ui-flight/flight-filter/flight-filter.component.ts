@@ -2,15 +2,20 @@ import { CommonModule } from '@angular/common';
 import { Component, effect, inject, input, output } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FlightFilter } from '../../logic-flight';
+import { FlightFilterStore } from './flight-filter.store';
+import { triggerNonReactiveContext } from './reactive-context.util';
 
 
 @Component({
   selector: 'app-flight-filter',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './flight-filter.component.html'
+  templateUrl: './flight-filter.component.html',
+  providers: [FlightFilterStore],
 })
 export class FlightFilterComponent {
+  protected localStore = inject(FlightFilterStore);
+
   filter = input.required<FlightFilter>();
   filterChange = output<FlightFilter>();
 
@@ -25,12 +30,21 @@ export class FlightFilterComponent {
   });
 
   constructor() {
-    effect(
-      () => this.inputFilterForm.setValue(this.filter())
+    effect(() => this.inputFilterForm.setValue(this.filter()));
+    this.localStore.initInputFilterUpdate(this.inputFilterForm.valueChanges);
+    this.localStore.initSelectedFilterUpdate(
+      this.selectedFilterControl.valueChanges
     );
-  }
-
-  protected triggerSearch(): void {
-    this.filterChange.emit(this.inputFilterForm.getRawValue());
+    triggerNonReactiveContext(this.localStore.selectedFilter, (trigger) => {
+      if (trigger?.from && trigger?.to) {
+        this.inputFilterForm.patchValue(trigger);
+      }
+    });
+    triggerNonReactiveContext(this.localStore.latestFilter, (trigger) => {
+      this.selectedFilterControl.setValue(trigger);
+    });
+    triggerNonReactiveContext(this.localStore.latestFilter, (trigger) => {
+      trigger && this.filterChange.emit(trigger);
+    });
   }
 }
