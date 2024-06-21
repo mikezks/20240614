@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, effect, inject, input, output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, Output, effect, inject, input, output } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FlightFilter } from '../../logic-flight';
 
@@ -11,6 +11,8 @@ import { FlightFilter } from '../../logic-flight';
   templateUrl: './flight-filter.component.html'
 })
 export class FlightFilterComponent {
+  private cdRef = inject(ChangeDetectorRef);
+
   filter = input.required<FlightFilter>();
   filterChange = output<FlightFilter>();
 
@@ -25,7 +27,10 @@ export class FlightFilterComponent {
   });
 
   constructor() {
-    effect(() => this.inputFilterForm.setValue(this.filter()));
+    effect(() => {
+      this.inputFilterForm.setValue(this.filter());
+      this.cdRef.markForCheck();
+    });
   }
 
   protected triggerSearch(): void {
